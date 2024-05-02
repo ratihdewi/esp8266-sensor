@@ -163,11 +163,8 @@ void loop() {
 
 void sensor()
 {
-  double kelembaban = dht.readHumidity();
-  double suhu = dht.readTemperature();
-
-  double kelembaban22 = dht.readHumidity();
-  double suhu22 = dht.readTemperature();
+  double kelembaban = dht11.readHumidity();
+  double suhu = dht11.readTemperature();
 
   // Check if any reads failed and exit early (to try again).
   if (isnan(kelembaban) || isnan(suhu)) {
@@ -193,6 +190,46 @@ void sensor()
   Serial.println(print_ppm);
 
   if(suhu >26 && kelembaban < 100 && ppm > 46)
+  {
+    digitalWrite(buzzer, HIGH);
+    delayMicroseconds(10);
+  } else {
+    digitalWrite(buzzer, LOW);
+    delayMicroseconds(10);
+  }
+
+  delay(10000); //interval 60s
+}
+
+void sesnsor2()
+{
+  double kelembaban22 = dht22.readHumidity();
+  double suhu22 = dht22.readTemperature();
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(kelembaban22) || isnan(suhu22)) {
+    Serial.println(F("Failed to read from DHT sensor!"));
+    return;
+  }
+
+  sensorValue = analogRead(pinAout);
+  ppm = 10.938 * exp(1.7742 * (sensorValue * 5.0 / 4095));
+
+  if(ppm<0){
+    ppm = 0;
+  }
+
+  String print_ppm = "Methane PPM: "; print_ppm += String(ppm);
+  
+  Serial.print(F("Temperature dht22:"));
+  Serial.print(suhu22);
+  Serial.print(F("°C   Humidity dht22:"));
+  Serial.print(kelembaban22);
+  Serial.println(F("%"));
+  Serial.println(ppm);
+  Serial.println(print_ppm);
+
+  if(suhu22 >26 && kelembaban22 < 100 && ppm > 46)
   {
     digitalWrite(buzzer, HIGH);
     delayMicroseconds(10);
